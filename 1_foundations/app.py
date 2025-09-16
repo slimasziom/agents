@@ -9,6 +9,7 @@ import gradio as gr
 
 load_dotenv(override=True)
 
+
 def push(text):
     requests.post(
         "https://api.pushover.net/1/messages.json",
@@ -24,9 +25,11 @@ def record_user_details(email, name="Name not provided", notes="not provided"):
     push(f"Recording {name} with email {email} and notes {notes}")
     return {"recorded": "ok"}
 
+
 def record_unknown_question(question):
     push(f"Recording {question}")
     return {"recorded": "ok"}
+
 
 record_user_details_json = {
     "name": "record_user_details",
@@ -53,6 +56,7 @@ record_user_details_json = {
     }
 }
 
+
 record_unknown_question_json = {
     "name": "record_unknown_question",
     "description": "Always use this tool to record any question that couldn't be answered as you didn't know the answer",
@@ -69,15 +73,15 @@ record_unknown_question_json = {
     }
 }
 
+
 tools = [{"type": "function", "function": record_user_details_json},
         {"type": "function", "function": record_unknown_question_json}]
 
 
 class Me:
-
     def __init__(self):
         self.openai = OpenAI()
-        self.name = "Ed Donner"
+        self.name = "Krzysztof Klimek"
         reader = PdfReader("me/linkedin.pdf")
         self.linkedin = ""
         for page in reader.pages:
@@ -86,7 +90,6 @@ class Me:
                 self.linkedin += text
         with open("me/summary.txt", "r", encoding="utf-8") as f:
             self.summary = f.read()
-
 
     def handle_tool_call(self, tool_calls):
         results = []
@@ -117,14 +120,17 @@ If the user is engaging in discussion, try to steer them towards getting in touc
         done = False
         while not done:
             response = self.openai.chat.completions.create(model="gpt-4o-mini", messages=messages, tools=tools)
+            
             if response.choices[0].finish_reason=="tool_calls":
                 message = response.choices[0].message
                 tool_calls = message.tool_calls
                 results = self.handle_tool_call(tool_calls)
                 messages.append(message)
                 messages.extend(results)
+            
             else:
                 done = True
+        
         return response.choices[0].message.content
     
 
