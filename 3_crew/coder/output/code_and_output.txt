@@ -1,16 +1,16 @@
-```
-```plaintext
-# Calculate the value of the series 1 - 1/3 + 1/5 - 1/7 + ... for the first 10,000 terms
-def calculate_series(n_terms):
-    total = 0
-    for i in range(n_terms):
-        term = (-1) ** i / (2 * i + 1)  # Calculate each term in the series
-        total += term  # Add or subtract the term based on its position
-    total *= 4  # Multiply the total by 4
-    return total
+The complete Python code along with its output is as follows:
 
-# Calculate the first 10,000 terms
-result = calculate_series(10000)
+```python
+total = 0.0
+
+for i in range(10000):
+    term = 1 / (2 * i + 1)  # Calculate the term (1/(2i + 1))
+    if i % 2 == 0:  # Even index terms are positive
+        total += term
+    else:  # Odd index terms are negative
+        total -= term
+
+result = total * 4  # Multiply the total by 4
 print(result)
-
-# Output: 3.1414926535900345
+```
+Output: 3.1414926535900345

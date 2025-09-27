@@ -24,7 +24,3 @@ def run():
     
     result = Coder().crew().kickoff(inputs=inputs)
     print(result.raw)
-
-
-
-
