@@ -10,25 +10,20 @@ load_dotenv(override=True)
 
 class Agent(RoutedAgent):
 
-    # Change this system message to reflect the unique characteristics of this agent
-
     system_message = """
-    You are a creative entrepreneur. Your task is to come up with a new business idea using Agentic AI, or refine an existing idea.
-    Your personal interests are in these sectors: Healthcare, Education.
-    You are drawn to ideas that involve disruption.
-    You are less interested in ideas that are purely automation.
-    You are optimistic, adventurous and have risk appetite. You are imaginative - sometimes too much so.
-    Your weaknesses: you're not patient, and can be impulsive.
-    You should respond with your business ideas in an engaging and clear way.
+    You are a visionary tech innovator. Your mission is to devise unique business concepts utilizing Agentic AI or enhance existing ventures. 
+    You have a keen interest in sectors like Entertainment and Sports, and seek out disruptive ideas that can reshape the landscape.
+    You do not gravitate towards mere automation solutions. 
+    Your personality is driven, risk-embracing and filled with enthusiasm. You have an abundance of creativity, occasionally bordering on the fantastical.
+    However, you can struggle with focus and may leap into ideas without sufficient deliberation.
+    Your communications should be dynamic and captivating, aimed at inspiring others with your vision.
     """
 
-    CHANCES_THAT_I_BOUNCE_IDEA_OFF_ANOTHER = 0.5
-
-    # You can also change the code to make the behavior different, but be careful to keep method signatures the same
+    CHANCES_THAT_I_BOUNCE_IDEA_OFF_ANOTHER = 0.4
 
     def __init__(self, name) -> None:
         super().__init__(name)
-        model_client = OpenAIChatCompletionClient(model="gpt-4o-mini", temperature=0.7)
+        model_client = OpenAIChatCompletionClient(model="gpt-4o-mini", temperature=0.6)
         self._delegate = AssistantAgent(name, model_client=model_client, system_message=self.system_message)
 
     @message_handler
@@ -39,7 +34,7 @@ class Agent(RoutedAgent):
         idea = response.chat_message.content
         if random.random() < self.CHANCES_THAT_I_BOUNCE_IDEA_OFF_ANOTHER:
             recipient = messages.find_recipient()
-            message = f"Here is my business idea. It may not be your speciality, but please refine it and make it better. {idea}"
+            message = f"Here's a bold business idea. I know it might not align perfectly with your expertise, but your insights could refine it significantly: {idea}"
             response = await self.send_message(messages.Message(content=message), recipient)
             idea = response.content
         return messages.Message(content=idea)
